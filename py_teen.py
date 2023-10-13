@@ -57,6 +57,7 @@ class PyTeen(nn.Module):
 
 # Data loaders for train/test data
 BATCH_SIZE = 32
+EPOCHS = 3
 
 pyteen = PyTeen()
 
@@ -71,13 +72,9 @@ test_loader = dataloader.DataLoader(
     shuffle=True)
 
 # Training loop
-
-for feature,label in train_loader:
-    batch_loss = pyteen.train(feature, label)
-    print(batch_loss)
-
-
-# EPOCH = 1
-
-# for i in range(EPOCH):
-#     # Call train repeatedly with traiing data pairs (feature, label)
+for i in range(EPOCHS):
+    total_loss = 0
+    # Call train repeatedly with traiing data pairs (feature, label)
+    for feature,label in train_loader:
+        total_loss += pyteen.train(feature, label)
+    print(f"Total loss for Epoch {i+1}: {total_loss/len(train_loader)}")
