@@ -89,6 +89,9 @@ for i in range(EPOCHS):
         total_loss += pyteen.train(feature, label)
     print(f"Total loss for Epoch {i+1}: {total_loss/len(train_loader)}")
 
+# Save trained network weights
+torch.save(pyteen.state_dict(), "py_teen.pth")
+
 # Evaluation/Testing loop
 print("-----------------Testing Network-----------------")
 
