@@ -1,6 +1,8 @@
+import torch
 from torch import nn, optim
 from torch.utils.data import dataloader
 from torchvision import datasets, transforms
+from tqdm import tqdm
 
 
 # Transform PIL image to tensor of image dimensions
@@ -41,6 +43,11 @@ class PyTeen(nn.Module):
     def forward(self, input):
         return self.layers(input)
 
+    def predict(self, feature):
+        with torch.no_grad():
+            pred = self.forward(feature)
+            return torch.argmax(pred, axis=-1)
+
     def train(self, feature, label):
         # Zero out all gradients at each step
         self.optimizer.zero_grad()
@@ -55,12 +62,13 @@ class PyTeen(nn.Module):
         return loss.item() # Don't NEED to return loss - nice for training loop
 
 
-# Data loaders for train/test data
+# Run this puppy!
 BATCH_SIZE = 32
 EPOCHS = 3
 
 pyteen = PyTeen()
 
+# Data loaders for train/test data
 train_loader = dataloader.DataLoader(
     training_data,
     batch_size=BATCH_SIZE,
@@ -72,9 +80,23 @@ test_loader = dataloader.DataLoader(
     shuffle=True)
 
 # Training loop
+print("-----------------Training Network-----------------")
+
 for i in range(EPOCHS):
     total_loss = 0
     # Call train repeatedly with traiing data pairs (feature, label)
-    for feature,label in train_loader:
+    for feature,label in tqdm(train_loader):
         total_loss += pyteen.train(feature, label)
     print(f"Total loss for Epoch {i+1}: {total_loss/len(train_loader)}")
+
+# Evaluation/Testing loop
+print("-----------------Testing Network-----------------")
+
+num_correct = 0
+
+for feature,label in tqdm(test_loader):
+    pred = pyteen.predict(feature)
+    num_correct += (pred == label).sum()
+
+accuracy = ((num_correct / (len(test_loader) * BATCH_SIZE)).item()) * 100
+print(f"Accuracy: {accuracy:.4f}%")
