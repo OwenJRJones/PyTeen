@@ -9,11 +9,11 @@ class PyTeen(nn.Module):
         super().__init__()
         # Sequential layers (fully connected/linear layers)
         self.layers = nn.Sequential(
-            nn.Linear(28*28, 512), # Input layer
+            nn.Linear(28*28, 256), # Input layer
             nn.ReLU(), # Activation func - input layer
-            nn.Linear(512, 512), # Hidden layer
+            nn.Linear(256, 256), # Hidden layer
             nn.ReLU(), # Activation func - hidden layer
-            nn.Linear(512, 10) # Output layer
+            nn.Linear(256, 10) # Output layer
         )
         # Loss/Cost func
         self.loss = nn.CrossEntropyLoss()

@@ -8,6 +8,8 @@ import pyteen
 
 
 BATCH_SIZE = 16
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 
 # Transform PIL image to tensor of image dimensions
 cust_transform = transforms.Compose(
@@ -28,6 +30,7 @@ test_loader = DataLoader(
     shuffle=True)
 
 pyteen = pyteen.PyTeen()
+pyteen.to(DEVICE)
 
 # load saved weights into network
 saved_paramters = torch.load('py_teen.pth')
@@ -39,6 +42,8 @@ print("-----------------Testing Network-----------------")
 num_correct = 0
 
 for feature,label in tqdm(test_loader):
+    feature = feature.to(DEVICE)
+    label = label.to(DEVICE)
     pred = pyteen.predict(feature)
     num_correct += (pred == label).sum()
 
