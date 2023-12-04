@@ -24,12 +24,6 @@ training_data = datasets.MNIST(
     train=True, # Set true for training data
     transform=cust_transform) # Use custom transform
 
-testing_data = datasets.MNIST(
-    root="./data",
-    download=True,
-    train=False,
-    transform=cust_transform)
-
 # Run this puppy!
 pyteen = pyteen.PyTeen()
 pyteen.to(DEVICE)
